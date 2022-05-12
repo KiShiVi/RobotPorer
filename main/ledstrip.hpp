@@ -2,16 +2,23 @@
 #define LED_STRIP_H
 #include <FastLED.h>
 
-#define BRIGHTNESS 50
-#define PIN 6
-#define LED_COUNT 2
+#define BRIGHTNESS 50	//!< Яркость светодиодов
+#define PIN 6			//!< Пин подключения светодиодной ленты
+#define LED_COUNT 2		//!< Кол-во светодиодов в ленте
+
+
+/*
+*	Класс ленты адресных светодиодов
+*
+*/
+
 
 class LedStrip
 {
 public:
-	LedStrip();
-	void ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b );
-	void ledOff( uint8_t pin );
+	LedStrip();													//!< Конструктор
+	void ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b );	//!< Включить светодиод. pin - позиция светодиода. r/g/b - цвет (0-255)
+	void ledOff( uint8_t pin );									//!< Выключить светодиод. pin - позиция светодиода
 	
 private:
 	CRGB leds[LED_COUNT];
