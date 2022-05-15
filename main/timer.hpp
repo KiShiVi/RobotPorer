@@ -16,6 +16,7 @@ public:
 	void reset();							//!< Ручной сброс таймера
 	void stop();							//!< Остановка таймера
 	void start();							//!< Запуск таймера
+	bool getState();
 
 private:
 	uint32_t m_timer = 0;
@@ -65,6 +66,11 @@ boolean Timer::isReady()
 
 void Timer::reset() {
 	m_timer = millis();
+}
+
+bool Timer::getState()
+{
+	return m_status;
 }
 
 #endif

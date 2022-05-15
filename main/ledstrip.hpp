@@ -2,7 +2,7 @@
 #define LED_STRIP_H
 #include <FastLED.h>
 
-#define BRIGHTNESS 50	//!< Яркость светодиодов
+#define BRIGHTNESS 255	//!< Яркость светодиодов
 #define PIN 6			//!< Пин подключения светодиодной ленты
 #define LED_COUNT 2		//!< Кол-во светодиодов в ленте
 
@@ -36,14 +36,14 @@ LedStrip::LedStrip()
 
 void LedStrip::ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b )
 {
-	Serial.print( "Led ON (pin / R;G;B):	" );
-	Serial.print( pin );
-	Serial.print( " / " );
-	Serial.print( r );
-	Serial.print( ";" );
-	Serial.print( g );
-	Serial.print( ";" );
-	Serial.println( b );
+	//Serial.print( "Led ON (pin / R;G;B):	" );
+	//Serial.print( pin );
+	//Serial.print( " / " );
+	//Serial.print( r );
+	//Serial.print( ";" );
+	//Serial.print( g );
+	//Serial.print( ";" );
+	//Serial.println( b );
 	
 	leds[pin] = CRGB(r, g, b);
 	FastLED.show();
@@ -51,8 +51,8 @@ void LedStrip::ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b )
 
 void LedStrip::ledOff( uint8_t pin )
 {
-	Serial.print( "Led OFF (pin):	" );
-	Serial.println( pin );
+	//Serial.print( "Led OFF (pin):	" );
+	//Serial.println( pin );
 	leds[pin] = CRGB(0, 0, 0);
 	FastLED.show();
 }
