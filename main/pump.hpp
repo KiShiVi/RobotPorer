@@ -3,7 +3,7 @@
 
 #include "timer.hpp"
 
-#define DEFAULT_START_TIMER 1000
+#define DEFAULT_DELAY_TIMER 500
 #define DEFAULT_FINISH_TIMER 2000	//!< Время по умолчанию, которое будет отрабатывать мотор при pumpStart( uint32_t seconds )
 
 /*
@@ -13,31 +13,36 @@
 class Pump
 {
 public:
-    Pump( int pin );					//!< Конструктор. pin - Пин питания на помпу
-    void pumpStart( uint32_t milli = DEFAULT_FINISH_TIMER );	//!< Включить помпу на milli времени (мс)
-    void pumpStop();					//!< Выключить помпу
-    uint8_t getState();					//!< Получить состояние помпы (BUSY, READY)
-	bool isWorking();
+  Pump( int pin );					//!< Конструктор. pin - Пин питания на помпу
+  void pumpStart( uint32_t milli = DEFAULT_FINISH_TIMER );	//!< Включить помпу на milli времени (мс)
+  void pumpStartWithoutTimer();
+  void pumpStop(bool justNow=false);					//!< Выключить помпу
+  uint8_t getState();					//!< Получить состояние помпы (BUSY, READY)
+	bool isPouring();
+  bool isFinishedPoured();
 	
 	void pumpCheck();					//!< Метод, который следует положить в loop(). Нужен для своевременного отключения по таймеру
     
 private:
-	Timer * startTimer;
+  Timer * startDelayTimer;
 	Timer * finishTimer;
-    int m_pompPin;
-    enum{ BUSY = 0, READY = 1 } m_state;
+  Timer * finishDelayTimer;
+  int m_pompPin;
+  enum{ BUSY = 0, READY = 1 } m_state;
 };
 
 Pump::Pump( int pin )
 {
-	startTimer 	= new Timer( DEFAULT_START_TIMER );
-	finishTimer = new Timer( DEFAULT_FINISH_TIMER );
-    m_state = READY; 
-    m_pompPin = pin;
-    Serial.println( "Pump init" );
+	startDelayTimer 	= new Timer( DEFAULT_DELAY_TIMER );
+	finishTimer       = new Timer( DEFAULT_FINISH_TIMER );
+  finishDelayTimer  = new Timer( DEFAULT_DELAY_TIMER );
+  m_state = READY; 
+  m_pompPin = pin;
+  Serial.println( "Pump init" );
 	
 	finishTimer->stop();
-	startTimer->stop();
+	startDelayTimer->stop();
+  finishDelayTimer->stop();
 }
 
 void Pump::pumpStart( uint32_t milli )
@@ -48,19 +53,33 @@ void Pump::pumpStart( uint32_t milli )
 		return;
 	}
 	m_state = BUSY;
-	startTimer->start();
+	startDelayTimer->start();
+  finishTimer->stop();
+  finishDelayTimer->stop();
 	finishTimer->setInterval( milli );
 	Serial.println("Pump PRE-START");
 }
 
-void Pump::pumpStop()
+void Pump::pumpStartWithoutTimer()
 {
-	m_state = READY;
+  digitalWrite( m_pompPin, HIGH );
+  m_state = BUSY;
+}
+
+void Pump::pumpStop( bool justNow )
+{
 	digitalWrite( m_pompPin, LOW );
 	Serial.println("Pump stoped");
 	
 	finishTimer->stop();
-	startTimer->stop();
+	startDelayTimer->stop();
+  finishDelayTimer->start();
+
+  if ( justNow )
+  {
+    finishDelayTimer->stop();
+    m_state = READY;
+  }
 }
 
 uint8_t Pump::getState()
@@ -68,25 +87,42 @@ uint8_t Pump::getState()
     return m_state;
 }
 
-bool Pump::isWorking()
+bool Pump::isPouring()
 {
-	if ( startTimer->getState() == false )
+	if ( startDelayTimer->getState() == false )
 		return true;
 	return false;
 }
 
+bool Pump::isFinishedPoured()
+{
+  if ( finishTimer->getState() == false )
+    return true;
+  return false;
+}
+
 void Pump::pumpCheck()
 {
-	if ( startTimer->isReady() && m_state == BUSY )
+	if ( startDelayTimer->isReady() )
 	{
+    startDelayTimer->stop();
 		finishTimer->start();
+    finishDelayTimer->stop();
+   
 		digitalWrite( m_pompPin, HIGH );
 		Serial.println("Pump started");
-		startTimer->stop();
 	}
-	
-	if ( finishTimer->isReady() && m_state == BUSY )
+ 
+	if ( finishTimer->isReady() )
 		pumpStop();
+
+  if ( finishDelayTimer->isReady() )
+  {
+    startDelayTimer->stop();
+    finishTimer->stop();
+    finishDelayTimer->stop();
+    m_state = READY;
+  }
 }
 
 #endif

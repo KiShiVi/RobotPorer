@@ -17,15 +17,17 @@ private:
 ServoCrane::ServoCrane( uint8_t pin )
 {
 	p_servo = new Servo();
-	m_currentAngle = 0;
+	m_currentAngle = 180;
 	p_servo->attach( pin );
-	p_servo->write( 0 );
+	p_servo->write( m_currentAngle );
 	
 	Serial.println("ServoCrane init");
 }
 
 void ServoCrane::rotate( uint8_t angle )
 {
+  if ( angle > 180 || angle < 0 )
+    return;
 	p_servo->write( angle );
 	m_currentAngle = angle;
 	Serial.println("ServoCrane rotate to " + angle);

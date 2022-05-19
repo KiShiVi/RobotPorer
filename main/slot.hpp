@@ -1,6 +1,7 @@
 #ifndef SLOT_H
 #define SLOT_H
 
+#include "timer.hpp"
 #include "servocrane.hpp"
 #include "pump.hpp"
 #include "ledstrip.hpp"
@@ -12,7 +13,11 @@ public:
 	void slotFirstCheck();
 	void slotSecondCheck();
 	void slotThirdCheck();
+  uint8_t getState();
+  
 private:
+  Timer * btnTimer;
+  bool btnState;
 	ServoCrane * m_servo;
 	Pump * p_pump;
 	LedStrip * p_ledStrip;								//!< Указатель на сервис ленты светодиодов
@@ -24,6 +29,8 @@ private:
 
 Slot::Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle )
 {
+  btnTimer = new Timer( 100 );
+  btnState = false;
 	p_ledStrip = ledStrip;
 	p_pump = pump;
 	m_servo = servo;
@@ -42,12 +49,16 @@ void Slot::slotFirstCheck()
 	*
 	*/
 	// Если концевик НЕ нажат
-	if ( digitalRead( m_btnPin ) )
+
+  if ( btnTimer->isReady() )
+    btnState = digitalRead( m_btnPin );
+  
+	if ( btnState )
 	{		
 		// У сервопривода будет поле текущего угла. Нужно проверить - если угол серво равен углу слота и статус слота = PROCESS, значит стопаем помпу
 		if ( m_servo->getCurrentAngle() == m_slotAngle && ( m_state == PROCESS || m_state == NEXT ) )
 		{
-			p_pump->pumpStop();
+			p_pump->pumpStop( false );
 		}
 			
 		if ( m_state != NO_GLASS )
@@ -57,7 +68,7 @@ void Slot::slotFirstCheck()
 		}
 	}
 	// Если концевик нажат
-	else if ( !digitalRead( m_btnPin ) )
+	else if ( !btnState )
 	{
 		if ( m_state == NO_GLASS )
 		{
@@ -73,8 +84,8 @@ void Slot::slotSecondCheck()
 	*	Этап #2. После первой проверки проверяем статус. Если рюмка налита красим светодиод в зеленый. 
 	*	
 	*/
-	
-	if ( m_state == PROCESS && p_pump->getState() == 1 )
+
+	if ( m_state == PROCESS && p_pump->isFinishedPoured() )
 	{
 		m_state = READY;
 		p_ledStrip->ledOn( m_slotID, 0, 255, 0 );
@@ -96,12 +107,17 @@ void Slot::slotThirdCheck()
 		p_ledStrip->ledOn( m_slotID, 0, 0, 255 );
 	}
 	
-	if ( m_state == NEXT && p_pump->isWorking() )
+	if ( m_state == NEXT && p_pump->isPouring() )
 	{
 		m_state = PROCESS;
 		p_ledStrip->ledOn( m_slotID, 255, 255, 0 );
 	}
 	
+}
+
+uint8_t Slot::getState()
+{
+  return m_state;
 }
 
 #endif
