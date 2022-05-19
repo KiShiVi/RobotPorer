@@ -1,6 +1,7 @@
 #ifndef BRAIN_H
 #define BRAIN_H
 
+#include "timer.hpp"
 #include <EncButton.h>
 
 #include "slot.hpp"
@@ -43,6 +44,8 @@ private:
   enum{ STARTED, FINISHED }   m_manualModeFlag;
   bool                        m_toastFlag;
 
+  bool            isStarted;
+  Timer       *   p_starterTimer;
 	ServoCrane 	*   p_servo;
 	Pump 		    *   p_pump;
 	LedStrip 	  *   p_ledStrip;
@@ -54,6 +57,8 @@ private:
 
 Brain::Brain()
 {
+  p_starterTimer = new Timer( 3000 );
+  isStarted = false;
   
 	m_mode = MANUAL;
 	m_glassVolume = 20;
@@ -76,6 +81,12 @@ Brain::Brain()
 
 void Brain::tick()
 {
+  if ( !isStarted )
+  {
+    isStarted = p_starterTimer->isReady();
+    return;
+  }
+  
   m_status = READY;
   for ( int i = 0; i < SLOT_COUNT; ++i )
     if ( p_slots[i]->getState() == 2 || p_slots[i]->getState() == 3 )
