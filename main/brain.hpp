@@ -2,6 +2,7 @@
 #define BRAIN_H
 
 #include "timer.hpp"
+#include "settings.hpp"
 #include <EncButton.h>
 
 #include "slot.hpp"
@@ -10,18 +11,11 @@
 #include "ledstrip.hpp"
 #include "display.hpp"
 
-#define SLOT_COUNT 2
-#define SERVO_PIN 5
-#define PUMP_PIN 2
 
-#define MAIN_BTN_PIN 4
-#define ENC_BTN_PIN 11
-#define ENC_A_PIN 9
-#define ENC_B_PIN 10
 
-const uint8_t BTN_SLOT_PINS[SLOT_COUNT] { 3, 8 };
-const uint8_t SLOT_IDS[SLOT_COUNT] 		{ 0, 1 };
-const uint8_t SLOT_ANGLES[SLOT_COUNT] 	{ 60, 120 };
+const uint8_t BTN_SLOT_PINS[SLOT_COUNT] { A0, A1, A2, 7, 2, A3 };
+const uint8_t SLOT_IDS[SLOT_COUNT] 		{ 5, 4, 3, 2, 1, 0 };
+const uint8_t SLOT_ANGLES[SLOT_COUNT] 	{ 175, 143, 109, 71, 35, 5 };
 
 class Brain
 {

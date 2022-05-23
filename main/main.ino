@@ -3,9 +3,14 @@
 Brain * brain;
 
 void setup() {
-  pinMode(3, INPUT_PULLUP);
-  pinMode(8, INPUT_PULLUP);
-  pinMode(5, INPUT);
+  pinMode(A0, INPUT_PULLUP);
+  pinMode(A1, INPUT_PULLUP);
+  pinMode(A2, INPUT_PULLUP);
+  pinMode(A3, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(6, OUTPUT);
+  
   Serial.begin(9600);
   brain = new Brain();
 }

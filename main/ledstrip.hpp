@@ -1,11 +1,8 @@
 #ifndef LED_STRIP_H
 #define LED_STRIP_H
+
+#include "settings.hpp"
 #include <FastLED.h>
-
-#define BRIGHTNESS 255	//!< Яркость светодиодов
-#define PIN 6			//!< Пин подключения светодиодной ленты
-#define LED_COUNT 2		//!< Кол-во светодиодов в ленте
-
 
 /*
 *	Класс ленты адресных светодиодов
@@ -26,7 +23,7 @@ private:
 
 LedStrip::LedStrip()
 {
-	FastLED.addLeds <WS2812, PIN, GRB>(leds, LED_COUNT).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds <WS2812, LED_PIN, GRB>(leds, LED_COUNT).setCorrection(TypicalLEDStrip);
 	FastLED.setBrightness( BRIGHTNESS );
 	for( int i = 0 ; i < LED_COUNT; ++i )
 		leds[i] = CRGB(0, 0, 0);

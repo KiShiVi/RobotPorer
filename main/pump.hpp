@@ -1,10 +1,8 @@
 #ifndef PUMP_H
 #define PUMP_H
 
+#include "settings.hpp"
 #include "timer.hpp"
-
-#define DEFAULT_DELAY_TIMER 500
-#define DEFAULT_FINISH_TIMER 2000	//!< Время по умолчанию, которое будет отрабатывать мотор при pumpStart( uint32_t seconds )
 
 /*
 *	class Pump - Класс помпы
