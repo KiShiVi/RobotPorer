@@ -22,7 +22,7 @@ Display::Display()
 
 void Display::printRandToast()
 {
-  Serial.println(printPGM(random(0, 20)));
+  Serial.println( printPGM(random( 0, 20 ) ) );
 }
 
 void Display::printInfo( uint16_t volume, uint8_t mode )
@@ -39,6 +39,12 @@ void Display::printInfo( uint16_t volume, uint8_t mode )
 		res += "S";
 	
 	Serial.println( res );
+}
+
+
+void Display::printInfo( uint32_t volume )
+{
+  Serial.println( volume );
 }
 
 

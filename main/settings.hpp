@@ -24,6 +24,7 @@
 //Настройка помпы
 #define DEFAULT_DELAY_TIMER 1500
 #define DEFAULT_FINISH_TIMER 2000	//!< Время по умолчанию, которое будет отрабатывать мотор при pumpStart( uint32_t seconds )
+#define ONE_HUNDRED_PER_SECOND 12900
 
 
 #endif

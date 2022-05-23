@@ -9,7 +9,7 @@
 class Slot
 {
 public:
-	Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle );
+	Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle, uint16_t * glassVolume );
 	void slotFirstCheck();
 	void slotSecondCheck();
 	void slotThirdCheck();
@@ -25,9 +25,10 @@ private:
 	uint8_t m_slotID; 									//!< ID слота. Должен совпадать с индексом светодиода
 	uint8_t m_slotAngle; 								//!< Угол расположения слота (0-180)
 	enum{ NO_GLASS, EMPTY, NEXT, PROCESS, READY } m_state;	//!< Статус слота
+  uint16_t * p_glassVolume;
 };
 
-Slot::Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle )
+Slot::Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle, uint16_t * glassVolume )
 {
   btnTimer = new Timer( 100 );
   btnState = false;
@@ -38,6 +39,7 @@ Slot::Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin
 	m_slotID = slotID;
 	m_slotAngle = slotAngle;
 	m_state = NO_GLASS;
+  p_glassVolume = glassVolume;
 }
 
 void Slot::slotFirstCheck()
@@ -103,7 +105,7 @@ void Slot::slotThirdCheck()
 	{
 		m_state = NEXT;
 		m_servo->rotate( m_slotAngle );
-		p_pump->pumpStart( /* Время заполенния какого-то объема */ );
+		p_pump->pumpStart( ONE_HUNDRED_PER_SECOND / 100 * (*p_glassVolume) );
 		p_ledStrip->ledOn( m_slotID, 0, 0, 255 );
 	}
 	

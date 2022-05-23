@@ -14,6 +14,7 @@ public:
   Display();
   void printRandToast();
   void printInfo( uint16_t volume, uint8_t mode );
+  void printInfo( uint32_t volume );
 private:
   Adafruit_SSD1306 * display;
 };
@@ -61,6 +62,16 @@ void Display::printInfo( uint16_t volume, uint8_t mode )
 		display->println( "S" );
 	
 	display->display();
+}
+
+void Display::printInfo( uint32_t volume )
+{
+  display->setTextSize(4);
+  display->clearDisplay();
+  display->display();
+  display->setCursor(0,0);
+  display->println( volume );
+  display->display();
 }
 
 

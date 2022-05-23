@@ -40,6 +40,7 @@ private:
 
   bool            isStarted;
   Timer       *   p_starterTimer;
+  uint32_t        p_serviceTime;
 	ServoCrane 	*   p_servo;
 	Pump 		    *   p_pump;
 	LedStrip 	  *   p_ledStrip;
@@ -63,7 +64,7 @@ Brain::Brain()
 	p_slots		  = new Slot * [SLOT_COUNT];
 	
 	for ( int i = 0; i < SLOT_COUNT; ++i )
-		p_slots[i] = new Slot( p_ledStrip, p_pump, p_servo, BTN_SLOT_PINS[i], SLOT_IDS[i], SLOT_ANGLES[i] );
+		p_slots[i] = new Slot( p_ledStrip, p_pump, p_servo, BTN_SLOT_PINS[i], SLOT_IDS[i], SLOT_ANGLES[i], &m_glassVolume );
 	
 	p_display	= new Display();
 	
@@ -220,13 +221,19 @@ void Brain::mainBtnPressed()
   else if ( m_mode == MANUAL )
     return;
   else if ( m_mode == SERVICE )
+  {
+    p_serviceTime = millis();
     p_pump->pumpStartWithoutTimer();
+  }
 }
 
 void Brain::mainBtnReleased()
 {
     if ( m_mode == SERVICE )
+    {
+      p_display->printInfo( ( millis() - p_serviceTime ) % 100000 );
       p_pump->pumpStop();
+    }
 }
 
 void Brain::mainBtnClick()
@@ -241,6 +248,9 @@ void Brain::encClicked()
 {
   if ( ( m_mode == AUTO || m_mode == MANUAL ) && m_manualModeFlag == FINISHED )
     p_display->printInfo( m_glassVolume, m_mode );
+
+  else if ( m_mode == SERVICE && m_manualModeFlag == FINISHED )
+    p_display->printInfo( p_servo->getCurrentAngle(), m_mode );
 }
 
 #endif
