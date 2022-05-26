@@ -6,7 +6,7 @@
 #include <Adafruit_SSD1306.h>
 
 String utf8rus(String source);
-String printPGM(byte idx);
+//String printPGM(byte idx);
 
 class Display
 {
@@ -26,7 +26,7 @@ Display::Display()
   display->clearDisplay();
   display->display();
   
-  Serial.println("Display init");
+  Serial.println(F("Display init"));
   
   display->setTextSize(2);
   display->setTextColor(SSD1306_WHITE);
@@ -41,7 +41,7 @@ void Display::printRandToast()
   display->clearDisplay();
   display->display();
   display->setCursor(0,0);
-  display->println(utf8rus(printPGM(random(0, 20))));
+  display->println(utf8rus(printPGM(random(0, 34))));
   display->display();
 }
 

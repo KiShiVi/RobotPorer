@@ -36,7 +36,7 @@ Pump::Pump( int pin )
   finishDelayTimer  = new Timer( DEFAULT_DELAY_TIMER );
   m_state = READY; 
   m_pompPin = pin;
-  Serial.println( "Pump init" );
+  Serial.println(F("Pump init"));
 	
 	finishTimer->stop();
 	startDelayTimer->stop();
@@ -47,7 +47,7 @@ void Pump::pumpStart( uint32_t milli )
 {
 	if ( m_state == BUSY )
 	{
-		Serial.println( "Pump BUSY" );
+		Serial.println(F("Pump BUSY"));
 		return;
 	}
 	m_state = BUSY;
@@ -55,7 +55,7 @@ void Pump::pumpStart( uint32_t milli )
   finishTimer->stop();
   finishDelayTimer->stop();
 	finishTimer->setInterval( milli );
-	Serial.println("Pump PRE-START");
+	Serial.println(F("Pump PRE-START"));
 }
 
 void Pump::pumpStartWithoutTimer()
@@ -67,7 +67,7 @@ void Pump::pumpStartWithoutTimer()
 void Pump::pumpStop( bool justNow )
 {
 	digitalWrite( m_pompPin, LOW );
-	Serial.println("Pump stoped");
+	Serial.println(F("Pump stoped"));
 	
 	finishTimer->stop();
 	startDelayTimer->stop();
@@ -108,7 +108,7 @@ void Pump::pumpCheck()
     finishDelayTimer->stop();
    
 		digitalWrite( m_pompPin, HIGH );
-		Serial.println("Pump started");
+		Serial.println(F("Pump started"));
 	}
  
 	if ( finishTimer->isReady() )

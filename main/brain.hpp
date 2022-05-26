@@ -13,8 +13,8 @@
 
 
 
-const uint8_t BTN_SLOT_PINS[SLOT_COUNT] { A0, A1, A2, 7, 2, A3 };
-const uint8_t SLOT_IDS[SLOT_COUNT] 		{ 5, 4, 3, 2, 1, 0 };
+const uint8_t BTN_SLOT_PINS[SLOT_COUNT] { A0, A1, A2, A3, 2, 7 };
+const uint8_t SLOT_IDS[SLOT_COUNT] 		{ 0, 1, 2, 3, 4, 5 };
 const uint8_t SLOT_ANGLES[SLOT_COUNT] 	{ 175, 143, 109, 71, 35, 5 };
 
 class Brain
@@ -157,7 +157,7 @@ void Brain::tick()
 
 void Brain::changeAutoManualMode()
 {
-  Serial.println("Mode changed");
+  Serial.println(F("Mode changed"));
   if ( m_mode != SERVICE )
   {
   	if ( m_mode == AUTO )
@@ -171,7 +171,7 @@ void Brain::changeAutoManualMode()
 
 void Brain::changeServiceMode()
 {
-  Serial.println("Mode changed");
+  Serial.println(F("Mode changed"));
   if ( m_mode == AUTO || m_mode == MANUAL)
   {
     m_mode = SERVICE;
@@ -216,6 +216,7 @@ void Brain::decGlassVolume()
 
 void Brain::mainBtnPressed()
 {
+  Serial.println(F( "MainBTN PRESSED" ) );
   if ( m_mode == AUTO )
     return;
   else if ( m_mode == MANUAL )
@@ -229,6 +230,7 @@ void Brain::mainBtnPressed()
 
 void Brain::mainBtnReleased()
 {
+    Serial.println(F("MainBTN RELEASED"));
     if ( m_mode == SERVICE )
     {
       p_display->printInfo( ( millis() - p_serviceTime ) % 100000 );

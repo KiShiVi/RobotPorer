@@ -9,15 +9,33 @@ void setup() {
   pinMode(A3, INPUT_PULLUP);
   pinMode(2, INPUT_PULLUP);
   pinMode(7, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
   pinMode(6, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(5, OUTPUT);
+  //digitalWrite(6, LOW);
   
   Serial.begin(9600);
   brain = new Brain();
 }
 
 void loop() {
-    brain->tick();
+  brain->tick();
 }
+
+extern int __bss_end;
+extern void *__brkval;
+
+int memoryFree()
+{
+   int freeValue;
+   if((int)__brkval == 0)
+      freeValue = ((int)&freeValue) - ((int)&__bss_end);
+   else
+      freeValue = ((int)&freeValue) - ((int)__brkval);
+   return freeValue;
+}
+
 
 //#include "slot.hpp"
 //#include "servocrane.hpp"

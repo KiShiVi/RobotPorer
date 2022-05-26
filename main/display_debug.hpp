@@ -16,8 +16,8 @@ public:
 
 Display::Display()
 {
-  Serial.println("Display init");
-  Serial.println("Робот\nРазливайка");
+  Serial.println(F("Display init"));
+  Serial.println(F("Робот\nРазливайка"));
 }
 
 void Display::printRandToast()

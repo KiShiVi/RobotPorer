@@ -21,7 +21,7 @@ ServoCrane::ServoCrane( uint8_t pin )
 	p_servo->attach( pin );
 	p_servo->write( m_currentAngle );
 	
-	Serial.println("ServoCrane init");
+	Serial.println(F("ServoCrane init"));
 }
 
 void ServoCrane::rotate( uint8_t angle )

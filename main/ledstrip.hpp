@@ -28,7 +28,7 @@ LedStrip::LedStrip()
 	for( int i = 0 ; i < LED_COUNT; ++i )
 		leds[i] = CRGB(0, 0, 0);
 	FastLED.show();
-	Serial.println( "LedStrip init" );
+	Serial.println(F("LedStrip init"));
 }
 
 void LedStrip::ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b )
