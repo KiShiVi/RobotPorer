@@ -12,13 +12,14 @@
 
 class LedStrip
 {
+	//!< Класс ленты адресных светодиодов
 public:
-	LedStrip();													//!< Конструктор
-	void ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b );	//!< Включить светодиод. pin - позиция светодиода. r/g/b - цвет (0-255)
-	void ledOff( uint8_t pin );									//!< Выключить светодиод. pin - позиция светодиода
+	LedStrip();														//!< Конструктор
+	void ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b );		//!< Включить светодиод. pin - позиция светодиода. r/g/b - цвет (0-255)
+	void ledOff( uint8_t pin );										//!< Выключить светодиод. pin - позиция светодиода
 	
 private:
-	CRGB leds[LED_COUNT];
+	CRGB leds[LED_COUNT];											//!< Массив светодиодов 
 };
 
 LedStrip::LedStrip()
@@ -33,23 +34,12 @@ LedStrip::LedStrip()
 
 void LedStrip::ledOn( uint8_t pin, uint8_t r, uint8_t g, uint8_t b )
 {
-	//Serial.print( "Led ON (pin / R;G;B):	" );
-	//Serial.print( pin );
-	//Serial.print( " / " );
-	//Serial.print( r );
-	//Serial.print( ";" );
-	//Serial.print( g );
-	//Serial.print( ";" );
-	//Serial.println( b );
-	
 	leds[pin] = CRGB(r, g, b);
 	FastLED.show();
 }
 
 void LedStrip::ledOff( uint8_t pin )
 {
-	//Serial.print( "Led OFF (pin):	" );
-	//Serial.println( pin );
 	leds[pin] = CRGB(0, 0, 0);
 	FastLED.show();
 }

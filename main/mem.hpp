@@ -1,6 +1,11 @@
 #ifndef MEM_H
 #define MEM_H
 
+/*
+*  Файл с тостами
+*
+*/
+
 const char str1[] PROGMEM = " ЗА\n  ЛЮБОВЬ";
 const char str2[] PROGMEM = " ЧТОБЫ\n  ВСЕ";
 const char str3[] PROGMEM = " ЗА ВСЁ\n  ХОРОШЕЕ";
@@ -37,20 +42,20 @@ const char str33[] PROGMEM = " ЗА\n  УСПЕХ";
 const char str34[] PROGMEM = " ЗА\n  ПОБЕДУ";
 
 const char* const names[] PROGMEM = {
-  str1,   str2,   str3,   str4,   str5,
-  str6,   str7,   str8,   str9,   str10,
-  str11,  str12,  str13,  str14,  str15,
-  str16,  str17,  str18,  str19,  str20,
-  str21,  str22,  str23,  str24,  str25,
-  str26,  str27,  str28,  str29,  str30,
-  str31,  str32,  str33,  str34
+	str1,   str2,   str3,   str4,   str5,
+	str6,   str7,   str8,   str9,   str10,
+	str11,  str12,  str13,  str14,  str15,
+	str16,  str17,  str18,  str19,  str20,
+	str21,  str22,  str23,  str24,  str25,
+	str26,  str27,  str28,  str29,  str30,
+	str31,  str32,  str33,  str34
 };
 
 String printPGM(byte idx) {
-  PGM_P p = pgm_read_word(names + idx);
-  char buf[strlen_P(p)];
-  strcpy_P(buf, p);
-  return String(buf);
+	PGM_P p = pgm_read_word(names + idx);
+	char buf[strlen_P(p)];
+	strcpy_P(buf, p);
+	return String(buf);
 }
 
 #endif

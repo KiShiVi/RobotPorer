@@ -1,6 +1,11 @@
 #ifndef SLOT_H
 #define SLOT_H
 
+/*
+*  Класс для работы со слотом
+*  
+*/
+
 #include "timer.hpp"
 #include "servocrane.hpp"
 #include "pump.hpp"
@@ -8,30 +13,41 @@
 
 class Slot
 {
+  //!< Класс для работы со слотом
 public:
+	//! 
+	//! Slot - Конструктор
+	//! \param ledStrip       - Указатель на светодиодную ленту
+	//! \param pump           - Указатель на помпу
+	//! \param servo          - Указатель на серво
+	//! \param btnPin         - Пин концевика
+	//! \param slotID         - Номер слота
+	//! \param slotAngle      - Угол, на котором расположен слот
+	//! \param glassVolume    - Указатель на выставленный объем сосуда
+	//!
 	Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle, uint16_t * glassVolume );
-	void slotFirstCheck();
-	void slotSecondCheck();
-	void slotThirdCheck();
-  uint8_t getState();
+	void slotFirstCheck();      //!< Первая проверка слота (должен быть в loop())
+	void slotSecondCheck();     //!< Вторая проверка слота (должен быть в loop())
+	void slotThirdCheck();      //!< Третья проверка слота (должен быть в loop())
+	uint8_t getState();         //!< Метод, возвращающий текущее состояние слота
   
 private:
-  Timer * btnTimer;
-  bool btnState;
-	ServoCrane * m_servo;
-	Pump * p_pump;
-	LedStrip * p_ledStrip;								//!< Указатель на сервис ленты светодиодов
-	uint8_t m_btnPin; 									//!< Номер пина концевика
-	uint8_t m_slotID; 									//!< ID слота. Должен совпадать с индексом светодиода
-	uint8_t m_slotAngle; 								//!< Угол расположения слота (0-180)
+	Timer * btnTimer;                   //!< Таймер антидребезга концевика
+	bool btnState;                      //!< Состояние концевика
+	ServoCrane * m_servo;               //!< Указатель на серво
+	Pump * p_pump;                      //!< Указатель на помпу
+	LedStrip * p_ledStrip;				//!< Указатель на сервис ленты светодиодов
+	uint8_t m_btnPin; 					//!< Номер пина концевика
+	uint8_t m_slotID; 					//!< ID слота. Должен совпадать с индексом светодиода
+	uint8_t m_slotAngle; 				//!< Угол расположения слота (0-180)
 	enum{ NO_GLASS, EMPTY, NEXT, PROCESS, READY } m_state;	//!< Статус слота
-  uint16_t * p_glassVolume;
+	uint16_t * p_glassVolume;           //!< Указатель на выставленный объем сосуда
 };
 
 Slot::Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin, uint8_t slotID, uint8_t slotAngle, uint16_t * glassVolume )
 {
-  btnTimer = new Timer( 100 );
-  btnState = false;
+	btnTimer = new Timer( 100 );
+	btnState = false;
 	p_ledStrip = ledStrip;
 	p_pump = pump;
 	m_servo = servo;
@@ -39,7 +55,7 @@ Slot::Slot( LedStrip * ledStrip, Pump * pump, ServoCrane * servo, uint8_t btnPin
 	m_slotID = slotID;
 	m_slotAngle = slotAngle;
 	m_state = NO_GLASS;
-  p_glassVolume = glassVolume;
+	p_glassVolume = glassVolume;
 }
 
 void Slot::slotFirstCheck()
@@ -52,12 +68,13 @@ void Slot::slotFirstCheck()
 	*/
 	// Если концевик НЕ нажат
 
-  if ( btnTimer->isReady() )
-    btnState = digitalRead( m_btnPin );
+	if ( btnTimer->isReady() )
+		btnState = digitalRead( m_btnPin );
   
 	if ( btnState )
 	{		
 		// У сервопривода будет поле текущего угла. Нужно проверить - если угол серво равен углу слота и статус слота = PROCESS, значит стопаем помпу
+    // Кто-то поднял рюмку раньше положенного
 		if ( m_servo->getCurrentAngle() == m_slotAngle && ( m_state == PROCESS || m_state == NEXT ) )
 		{
 			p_pump->pumpStop( false );
@@ -123,11 +140,3 @@ uint8_t Slot::getState()
 }
 
 #endif
-
-/*
-*	Примечания: Где-то уровнем выше надо чекать все слоты на статус PROCESS, чтобы в первую очередь проверять именно эту рюмку.
-*
-*
-*
-*
-*/
